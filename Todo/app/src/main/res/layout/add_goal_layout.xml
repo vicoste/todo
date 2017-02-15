@@ -18,9 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textShortMessage"
-        android:text="@string/Titre"
         android:ems="10"
         android:id="@+id/titre_new_obj"
+        android:hint="@string/Titre"
         android:layout_below="@id/tv_nouv_objectif"/>
 
     <EditText
@@ -30,7 +30,7 @@
         android:ems="10"
         android:layout_below="@+id/titre_new_obj"
         android:id="@+id/et_contenu_new_obj"
-        android:text="@string/Contenu" />
+        android:hint="@string/Contenu" />
 
 
     <TextView
