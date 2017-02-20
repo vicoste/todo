@@ -11,6 +11,7 @@ import android.support.v7.app.NotificationCompat;
 import android.test.mock.MockApplication;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,33 +34,31 @@ public class AddGoalActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_goal_layout);
-
         if (getIntent() != null) {
 
         }
-    }
 
-    /**
-     * Methode permettant de de revenir à l'écran d'acceuil sans prendre compte des informations qui ont été saisie (ou non)
-     * @param sender
-     */
-    public void onClick_return (View sender){
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-    }
+        Button backButton = (Button)findViewById(R.id.bt_return_main_layout);
+        Button addButton = (Button)findViewById(R.id.bt_valid_new_obj);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (creerObjectif()) {
+                    Intent intent = new Intent(v.getContext(), MainActivity.class);
+                    Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
+                    createValidateNotification();
+                }
+            }
+        });
 
-    /**
-     * Methode permettant de valider le nouvel objectif saisie par l'utilisateur et le faire revenir à l'écran d'acceuil suite à un enregistrement de ses nouvelles données
-     * @param sender
-     */
-    public void onClick_valid_new_obj (View sender){
-
-        if (creerObjectif()) {
-            Intent intent = new Intent(this,MainActivity.class);
-            Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();
-            startActivity(intent);
-            createValidateNotification();
-        }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /*
@@ -103,11 +102,10 @@ public class AddGoalActivity extends AppCompatActivity {
     }
 
 
-    /*return true si le titre est correct
-        return false si il est vide
+    /**return true si le titre est correct
+     *  @return false si il est vide
      */
     public boolean validationTitre(String titre){
-
         return (!titre.isEmpty() && (titre.replace(" ", "").length() > 1));
     }
 }

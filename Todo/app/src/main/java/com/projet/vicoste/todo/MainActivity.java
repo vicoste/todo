@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 
 import com.projet.vicoste.todo.metier.Objectif;
 
@@ -28,23 +29,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_layout);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.lv_todolist);
-
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         mAdapter = new MainRecyclerViewAdapteur (((BaseApplication) getApplication()).getObjectifs());
         mRecyclerView.setAdapter(mAdapter);
 
+        Button button_add = (Button)findViewById(R.id.bt_add);
+        button_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AddGoalActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    /**
-     * Methode permettant de se diriger vers l'écran d'ajout d'un nouvel objectif
-     * @param sender
-     */
-    public void onClick_AddGoal (View sender){
-        Intent intent = new Intent(this,AddGoalActivity.class);
-        startActivity(intent);
-    }
 
     /*methode qui va remplir la recyclerListe( ou listView) avec les objectifs. (CODE INCOMPLET)*/
     public void gestionListe(){

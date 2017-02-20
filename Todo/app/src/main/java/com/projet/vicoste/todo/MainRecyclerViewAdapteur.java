@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by vicoste on 17/02/17.
+ * Adaptateur de la RecyclerView
  */
 public class MainRecyclerViewAdapteur extends RecyclerView.Adapter<MainRecyclerViewAdapteur.ViewHolder> {
 
