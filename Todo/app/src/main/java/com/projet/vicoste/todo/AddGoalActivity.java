@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -109,4 +110,6 @@ public class AddGoalActivity extends AppCompatActivity {
     public boolean validationTitre(String titre){
         return (!titre.isEmpty() && (titre.replace(" ", "").length() > 1));
     }
+
+
 }
