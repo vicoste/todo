@@ -61,8 +61,9 @@ public class AddGoalActivity extends AppCompatActivity {
         });
     }
 
-    /*
-        Methode qui cree une notification lors de la creation d'un objectif
+
+    /**
+     * Methode qui cree une notification lors de la creation d'un objectif
      */
     private void createValidateNotification(){
         Intent intent = new Intent(this, MainActivity.class);
@@ -92,7 +93,7 @@ public class AddGoalActivity extends AppCompatActivity {
         Date date = new Date(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
 
         if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return false;}
-        //if(date.getDay() < (new Date()).getDay()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return false; }
+        if(date.getDate() < (new Date()).getDate()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return false; }
 
         Objectif o = new Objectif(nom.getText().toString(),description.getText().toString(), date);
         Log.d("OBJECTIF :",o.toString());
