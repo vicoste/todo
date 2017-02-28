@@ -2,11 +2,17 @@ package com.projet.vicoste.todo;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.test.mock.MockApplication;
@@ -19,7 +25,9 @@ import android.widget.Toast;
 
 import com.projet.vicoste.todo.metier.Objectif;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.jar.Manifest;
 
 /**
  * Created by Lou on 07/02/2017.
@@ -28,6 +36,7 @@ import java.util.Date;
 
 public class AddGoalActivity extends AppCompatActivity {
 
+    private static final int  MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 1;
     private static final int REQUEST_CODE_NOTIFICATION = 0;
 
 
@@ -96,7 +105,8 @@ public class AddGoalActivity extends AppCompatActivity {
         if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return false;}
         if(date.getDate() < (new Date()).getDate()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return false; }
 
-        Objectif o = new Objectif(nom.getText().toString(),description.getText().toString(), date);
+        Objectif o = new Objectif(nom.getText().toString(),description.getText().toString(), date, null);
+        addEvent(o);
         Log.d("OBJECTIF :",o.toString());
         ((BaseApplication) getApplication()).add(o);
         return true;
@@ -107,9 +117,61 @@ public class AddGoalActivity extends AppCompatActivity {
     /**return true si le titre est correct
      *  @return false si il est vide
      */
-    public boolean validationTitre(String titre){
+    private boolean validationTitre(String titre){
         return (!titre.isEmpty() && (titre.replace(" ", "").length() > 1));
     }
 
+
+    /**
+     * Methode qui va ajouter un evenement dans le calendrier google
+     */
+    private void addEvent(Objectif objectif){
+        if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.WRITE_CALENDAR)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_CALENDAR},
+                        MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+            }
+        } else {
+            long calID = 3;
+            long startMillis = 0;
+            long endMillis = 0;
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(objectif.getDateDebut().getYear(), objectif.getDateDebut().getMonth(), objectif.getDateDebut().getDay(), objectif.getDateDebut().getHours(), objectif.getDateDebut().getMinutes());
+            startMillis = beginTime.getTimeInMillis();
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(objectif.getDateFin().getYear(), objectif.getDateFin().getMonth(), objectif.getDateFin().getDay(), objectif.getDateFin().getHours(), objectif.getDateFin().getMinutes());
+            endMillis = endTime.getTimeInMillis();
+
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.DTSTART, startMillis);
+            values.put(CalendarContract.Events.DTEND, endMillis);
+            values.put(CalendarContract.Events.TITLE, objectif.getNom());
+            values.put(CalendarContract.Events.DESCRIPTION, objectif.getDescription());
+            values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            long eventID = Long.parseLong(uri.getLastPathSegment());
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_CALENDAR : {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    //permission refusée
+                }
+                return;
+            }
+        }
+    }
 
 }

@@ -14,21 +14,28 @@ public class Objectif {
         public String getDescription() {return description;}
         public void setDescription(String contenue) {this.description = contenue;}
 
-    private Date date;
-        public Date getDate() {return date;}
-        public void setDate(Date date) {this.date = date;}
+    private Date dateDebut;
+        public Date getDateDebut() {return dateDebut;}
+        public void setDateDebut(Date date) {this.dateDebut = date;}
+
+    private Date dateFin;
+        public Date getDateFin() {return dateFin;}
+        public void setDateFin(Date date) {this.dateFin = date;}
 
 
-    public Objectif(String nom, String description, Date date) {
+    public Objectif(String nom, String description, Date dateDebut, Date dateFin) {
         this.nom = nom;
         this.description = description;
-        this.date = date;
+        this.dateDebut = dateDebut;
+        if (dateFin == null){
+            this.dateFin = dateDebut;
+        }
     }
 
 
     @Override
     public String toString() {
-        return nom + " se deroule le" + date.toString()+". " + description;
+        return nom + " se deroule le" + dateDebut.toString()+". " + description;
     }
 }
 

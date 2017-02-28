@@ -10,11 +10,13 @@
         />
 
     <Button
+        style="@style/style_text_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/retour" />
 
     <Button
+        style="@style/style_text_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/valider"

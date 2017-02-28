@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="style_text_button"
+        parent="@style/TextAppearance.AppCompat.Button">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorDarkRed</item>
+    </style>
+
+
 </resources>

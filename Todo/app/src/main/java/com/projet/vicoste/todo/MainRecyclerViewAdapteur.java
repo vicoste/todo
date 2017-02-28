@@ -42,7 +42,7 @@ public class MainRecyclerViewAdapteur extends RecyclerView.Adapter<MainRecyclerV
     // - replace the contents of the view with that element
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.textview.setText(objectifs.get(position).getNom() + " à faire avant le " + objectifs.get(position).getDate().getDay() + " " + objectifs.get(position).getDate().getMonth() + " " + objectifs.get(position).getDate().getYear());
+        holder.textview.setText(objectifs.get(position).getNom() + " à faire avant le " + objectifs.get(position).getDateDebut().getDay() + " " + objectifs.get(position).getDateDebut().getMonth() + " " + objectifs.get(position).getDateDebut().getYear());
     }
 
 
