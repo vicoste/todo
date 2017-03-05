@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/linear_layout_cell_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="6dp">
+
+        <!-- Image pour rendre "jolie" l'objectif :3-->
+        <ImageView
+            android:id="@+id/iv_recycler_view"
+            android:layout_width="70dip"
+            android:layout_height="70dip"
+            android:src="@drawable/clock"/>
+
+    </LinearLayout>
+
+    <!-- Titre de l'objectif-->
+    <TextView
+        style="style_text_title_recycler_view"
+        android:id="@+id/tv_title_obj_cell_recycler_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/linear_layout_cell_recycler_view"
+        android:layout_toRightOf="@id/linear_layout_cell_recycler_view"/>
+
+    <!-- Date de début de l'objectif-->
+    <TextView
+        style="@style/style_text_date_recycler_view"
+        android:id="@+id/tv_date_obj_cell_recycler_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title_obj_cell_recycler_view"
+        android:layout_toRightOf="@id/linear_layout_cell_recycler_view"/>
+
+    <!--  Image pour signifier qu'on peut aller sur la description de l'objectif -->
+    <ImageButton
+        android:id="@+id/ib_go_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/right_arrow"/>
+
+
+</RelativeLayout>

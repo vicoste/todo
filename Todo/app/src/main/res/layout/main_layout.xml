@@ -1,37 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android.support.v7.widget.RecyclerViewandroid="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_mesobjectifs"
-        android:textStyle="normal|bold"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:text="@string/mesobjectifs" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_mesobjectifs"
+            android:textStyle="normal|bold"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:text="@string/mesobjectifs" />
 
 
-    <Button
-        style="@style/style_text_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bt_add"
-        android:layout_alignParentBottom="true"
-        android:text="@string/plus" />
+        <android.support.v7.widget.RecyclerView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:id="@+id/lv_todolist"
+           android:layout_below="@+id/tv_mesobjectifs"
+           android:layout_alignParentLeft="true"
+           android:layout_alignParentStart="true"/>
 
-    <android.support.v7.widget.RecyclerView
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/lv_todolist"
-       android:layout_below="@+id/tv_mesobjectifs"
-       android:layout_alignParentLeft="true"
-       android:layout_alignParentStart="true"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_main_go_add_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/clock_add"/>
 
+    </RelativeLayout>
 
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

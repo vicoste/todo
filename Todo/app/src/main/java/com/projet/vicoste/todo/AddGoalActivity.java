@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,6 @@ import com.projet.vicoste.todo.metier.Objectif;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.jar.Manifest;
 
 /**
  * Created by Lou on 07/02/2017.
@@ -44,33 +44,18 @@ public class AddGoalActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_goal_layout);
-        if (getIntent() != null) {
-
-        }
-
-        Button backButton = (Button)findViewById(R.id.bt_return_main_layout);
-        Button addButton = (Button)findViewById(R.id.bt_valid_new_obj);
+        FloatingActionButton addButton = (FloatingActionButton)findViewById(R.id.bt_valid_new_obj);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (creerObjectif()) {
-                    Intent intent = new Intent(v.getContext(), MainActivity.class);
                     Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
                     createValidateNotification();
+                    finish();
                 }
             }
         });
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        });
     }
-
 
     /**
      * Methode qui cree une notification lors de la creation d'un objectif
@@ -108,7 +93,7 @@ public class AddGoalActivity extends AppCompatActivity {
         Objectif o = new Objectif(nom.getText().toString(),description.getText().toString(), date, null);
         addEvent(o);
         Log.d("OBJECTIF :",o.toString());
-        ((BaseApplication) getApplication()).add(o);
+        ((BaseApplication)getApplication()).add(o);
         return true;
 
     }
@@ -127,13 +112,9 @@ public class AddGoalActivity extends AppCompatActivity {
      */
     private void addEvent(Objectif objectif){
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.WRITE_CALENDAR)) {
-            } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.WRITE_CALENDAR},
                         MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
-            }
         } else {
             long calID = 3;
             long startMillis = 0;
@@ -152,6 +133,7 @@ public class AddGoalActivity extends AppCompatActivity {
             values.put(CalendarContract.Events.TITLE, objectif.getNom());
             values.put(CalendarContract.Events.DESCRIPTION, objectif.getDescription());
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe");
             Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
             long eventID = Long.parseLong(uri.getLastPathSegment());
         }
