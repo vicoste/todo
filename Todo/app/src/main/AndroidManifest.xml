@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.projet.vicoste.todo">
 
-
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
@@ -14,10 +13,6 @@
         android:theme="@style/AppTheme"
         android:name=".BaseApplication">
 
-
-        <meta-data android:name="com.google.android.calendar.API_KEY"
-                    android:value="AIzaSyDgXZA6W_wrnMG2slHfa3YBSp3Dmk5Cj0g"/>
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,8 +20,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AddGoalActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".AddGoalActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -38,6 +32,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <meta-data android:name="com.google.android.calendar.API_KEY"
+            android:value="AIzaSyDgXZA6W_wrnMG2slHfa3YBSp3Dmk5Cj0g"/>
 
     </application>
 

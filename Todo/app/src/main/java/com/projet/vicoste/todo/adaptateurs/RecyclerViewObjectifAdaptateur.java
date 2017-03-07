@@ -80,7 +80,6 @@ public class RecyclerViewObjectifAdaptateur extends RecyclerView.Adapter< Recycl
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Changement activite", "OK");
                 mContext.startActivity(new Intent(mContext, DescriptionActivity.class));
             }
         };

@@ -61,14 +61,15 @@
             android:id="@+id/bt_description_delete_obj"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginRight="@dimen/fab_margin"
             android:src="@drawable/delete"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/bt_description_valid_obj"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
             android:src="@drawable/validate"/>
 
     </LinearLayout>
