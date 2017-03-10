@@ -19,6 +19,7 @@ import com.projet.vicoste.todo.adaptateurs.RecyclerViewObjectifAdaptateur;
 import com.projet.vicoste.todo.metier.Objectif;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Lou on 05/02/2017.
@@ -40,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        test();
         setContentView(R.layout.main_layout);
+
 
         mRecyclerView = (RecyclerView) findViewById(R.id.lv_todolist);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
+
     }
 
 
@@ -70,27 +75,51 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Initialise l'application avec tout les evements trouvés dans le calendar de maintenant jusque dans 3 ans
      */
-   /* private void eventInitialization(){
+    private void eventInitialization(){
+        Date d = new Date();
+        Log.d("DATE", d.toString());
         Calendar beginTime = Calendar.getInstance();
-        beginTime.set();
+        beginTime.set(d.getYear(),d.getMonth(),d.getDate());
         long startMillis = beginTime.getTimeInMillis();
+        Log.d("BEGIN",beginTime.toString());
+
         Calendar endTime = Calendar.getInstance();
-        endTime.set();
+        endTime.set(d.getYear()+5,d.getMonth(),d.getDate());
         long endMillis = endTime.getTimeInMillis();
+        Log.d("END",endTime.toString());
+        String selection = "((" + CalendarContract.Instances.START_DAY+ " < ?) AND (" + CalendarContract.Instances.START_DAY + " > ?))"; //construct the query
+        String[] selectionArgs = new String[] {String.valueOf(startMillis), String.valueOf(endMillis) };
         Cursor cur = null;
         ContentResolver cr = getContentResolver();
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
+        Log.d("URI", builder.toString());
         ContentUris.appendId(builder, startMillis);
         ContentUris.appendId(builder, endMillis);
         cur =  cr.query(builder.build(), //submit the query
                 INSTANCE_PROJECTION,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null);
+        Log.d("CURSEUR", builder.build().toString());
         while (cur.moveToNext()) {
             ((BaseApplication)getApplication()).add(new Objectif(cur.getString(PROJECTION_TITLE), null,null ,null));
+            Log.d("DANS LE WHILE",cur.getString(PROJECTION_TITLE));
         }
-    }*/
+
+    }
+
+    private void test() {
+
+        String selection = "((" + CalendarContract.Instances.CALENDAR_ID + " = ?))"; //construct the query
+        String[] selectionArgs = new String[]{"1"};
+        Cursor cursor = getContentResolver().query(Uri.parse("content://com.android.calendar/events"), new String[]{"_id", "title", "description", "dtstart", "dtend", "eventLocation"}, selection, selectionArgs, null);
+        while (cursor.moveToNext()) {
+            ((BaseApplication)getApplication()).add(new Objectif(cursor.getString(PROJECTION_TITLE), cursor.getString(3),new Date(cursor.getLong(4)) ,new Date( cursor.getLong(5))));
+            Log.d("DANS LE WHILE", cursor.getString(PROJECTION_TITLE));
+        }
+        cursor.close();
+    }
+
 
 }
 
