@@ -17,13 +17,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.projet.vicoste.todo.metier.Objectif;
+import com.projet.vicoste.todo.metier.ObjectifManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -35,25 +35,36 @@ import java.util.Date;
 
 public class AddGoalActivity extends AppCompatActivity {
 
+    //***********************************PARAMS********************************
+    /**
+     * numéro caractérisant la permission d'écrire dans le calendrier
+     */
     private static final int  MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 1;
+
+    /**
+     * code requis pour l'envoit de notifications
+     */
     private static final int REQUEST_CODE_NOTIFICATION = 0;
 
-    public static final String[] EVENT_PROJECTION = new String[] {
-            CalendarContract.Calendars._ID,                           // 0
-            CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-            CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
-    };
-    private static final int PROJECTION_ID_INDEX = 0;
-    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
-    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
-    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
-
+    /**
+     * description et nom sont des editText qui vont respectivement correspondre aux valeurs suivante : la description/contenu de l'objectif que
+     * l'utilisateur souhaite se fixer, et le nom qu'il aura donné à cet objectif
+     */
     private EditText description, nom;
+
+    /**
+     * DatePicker sur lequel on va récupérer la date où l'utilisateur souhaite placer son événement
+     */
     private DatePicker datePicker;
+
+    /**
+     * Objectif qui va être ajouté par l'utilisateur
+     */
     private Objectif objectif;
 
 
+
+    //**********************************METHODS***************************
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +80,6 @@ public class AddGoalActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     /**
      * Methode qui cree une notification lors de la creation d'un objectif
@@ -90,40 +99,32 @@ public class AddGoalActivity extends AppCompatActivity {
         mNotificationManager.notify(42, mBuilder.build());
     }
 
-
-
     /**
-     *methode permettant de creer et d'ajouter l'objectif defini par l'utilisateur a la liste de tout les objectifs
-     * @return true si l'objectif a pû etre cree, false sinon
+     *methode permettant de creer et d'ajouter l'objectif definit par l'utilisateur à la liste de tout les objectifs.
+     *  - Si l'objectif est jugé comme acceptable ( si le titre est bien validé et que la date n'est pas inférieure à celle du jour) alors il est ajouté en tant
+     *    qu'évenement dans le calendrier principal de l'utilisateur
+     *  - Sinon, un message informatif sur l'erreur apparaît et on revient là où on en était avant l'essai de la création d'un objectif
      */
-    public boolean creerObjectif(){
+    public void creerObjectif(){
         Date date = new Date(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
-
-        if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return false;}
-        if(date.getDate() < (new Date()).getDate()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return false; }
-
-        objectif= new Objectif(nom.getText().toString(),description.getText().toString(), date, null);
+        if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return;}
+        if(date.getDate() < (new Date()).getDate()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
+        objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
         checkForAddEvent();
-        ((BaseApplication)getApplication()).add(objectif);
-        return true;
-
+        ObjectifManager.getObjectifs(this).add(objectif);
     }
 
-
-
-
     /**return true si le titre est correct
-     *  @return false si il est vide
+     *  @return false si il est vide, true si ok
      */
     private boolean validationTitre(String titre){
         return (!titre.isEmpty() && (titre.replace(" ", "").length() > 1));
     }
 
-
-
-
     /**
      * Methode qui va verifier les autorisations pour ajouter un evenement dans le calendrier google
+     * Si celles si sont à jour, alors on va insérer l'événement dans le calendrier, afficher un toast d'encouragement et envoyer une notification à l'utilisateur
+     * pour ensuite revenir sur la vue principale
      */
     private void checkForAddEvent(){
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
@@ -139,17 +140,17 @@ public class AddGoalActivity extends AppCompatActivity {
     }
 
     /**
-     * Methode d'insertion dans le calendar principal
+     * Methode d'insertion dans le calendar principal du mobile
      */
     private void insertIntoCalendar() {
         long calID = 1;
         long startMillis = 0;
         long endMillis = 0;
         Calendar beginTime = Calendar.getInstance();
-        beginTime.set(objectif.getDateDebut().getYear(), objectif.getDateDebut().getMonth(), objectif.getDateDebut().getDate(), objectif.getDateDebut().getHours() + 1, objectif.getDateDebut().getMinutes());
+        beginTime.set(objectif.getDateDebut().getYear(), objectif.getDateDebut().getMonth(), objectif.getDateDebut().getDate(), objectif.getDateDebut().getHours(), objectif.getDateDebut().getMinutes());
         startMillis = beginTime.getTimeInMillis();
         Calendar endTime = Calendar.getInstance();
-        endTime.set(objectif.getDateFin().getYear(), objectif.getDateFin().getMonth(), objectif.getDateFin().getDate(), objectif.getDateFin().getHours()+2, objectif.getDateFin().getMinutes());
+        endTime.set(objectif.getDateFin().getYear(), objectif.getDateFin().getMonth(), objectif.getDateFin().getDate(), objectif.getDateFin().getHours(), objectif.getDateFin().getMinutes());
         endMillis = endTime.getTimeInMillis();
         ContentResolver cr = getContentResolver();
         ContentValues values = new ContentValues();
@@ -161,36 +162,6 @@ public class AddGoalActivity extends AppCompatActivity {
         values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe");
         @SuppressWarnings("MissingPermission") Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
     }
-
-
-    /**
-     * Query the calendar
-     */
-    private void queryCalendar() {
-        // Run query
-        Cursor cur = null;
-        ContentResolver cr = getContentResolver();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String selection = "((" + CalendarContract.Calendars.ACCOUNT_NAME + " = ?) AND ("
-                + CalendarContract.Calendars.ACCOUNT_TYPE + " = ?))";
-        String[] selectionArgs = new String[]{"inf63.iut.uda@gmail.com", "com.gmail"};
-        // Submit the query and get a Cursor object back.
-        //noinspection MissingPermission
-        cur = cr.query(uri, EVENT_PROJECTION, null, null, null);
-        while (cur.moveToNext()) {
-            long calID = 0;
-            String displayName = null;
-            String accountName = null;
-            String ownerName = null;
-            // Get the field values
-            calID = cur.getLong(PROJECTION_ID_INDEX);
-            displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
-            accountName = cur.getString(PROJECTION_ACCOUNT_NAME_INDEX);
-            ownerName = cur.getString(PROJECTION_OWNER_ACCOUNT_INDEX);
-        }
-    }
-
-
 
     /**
      * Methode de vérification des permissions

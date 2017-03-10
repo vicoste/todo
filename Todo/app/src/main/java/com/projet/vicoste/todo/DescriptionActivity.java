@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.projet.vicoste.todo.metier.Objectif;
+import com.projet.vicoste.todo.metier.ObjectifManager;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,23 +35,35 @@ import java.util.Date;
  */
 
 public class DescriptionActivity extends AppCompatActivity {
-    private static final int REQUEST_CODE_NOTIFICATION = 0;
-    private static final String[] INSTANCE_PROJECTION = new String[] {
-            CalendarContract.Instances.EVENT_ID,      // 0
-            CalendarContract.Instances.BEGIN,         // 1
-            CalendarContract.Instances.TITLE          // 2
-    };
-    // The indices for the projection array above.
-    private static final int PROJECTION_ID_INDEX = 0;
-    private Objectif objectif;
-    private EditText description;
-    private TextView date, titre;
-    private long eventID;
 
+    //***************************PARAMS**********************************
+    /**
+     * représente le code requis pour l'envoit de notifications
+     */
+    private static final int REQUEST_CODE_NOTIFICATION = 0;
+
+    /**
+     * Objectif vu en détail sur cette vue
+     */
+    private Objectif objectif;
+
+    /**
+     * EditText qui va contenir la description de l'objectif sur laquelle est basée la vue.
+     * C'est ici que pourra être modifié le contenu de l'objectif
+     */
+    private EditText description;
+
+    /**
+     * TextView qui vont simplement contenir la date de début de l'événement et le titre de celui-ci
+     */
+    private TextView date, titre;
+
+
+    //****************************METHODS*******************************
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        objectif = ((BaseApplication)getApplication()).getObjectifs().get((Integer)(getIntent().getExtras().get("position")));
+        objectif = (ObjectifManager.getObjectifs(this).get((Integer)(getIntent().getExtras().get("position"))));
         setContentView(R.layout.description_layout);
         description = (EditText)findViewById(R.id.et_description_objectif_contenu);
         description.setText(objectif.getDescription());
@@ -58,9 +71,7 @@ public class DescriptionActivity extends AppCompatActivity {
         date.setText(objectif.getDateDebut().getDate() + "/" + objectif.getDateDebut().getMonth() + "/" + objectif.getDateDebut().getYear());
         titre = (TextView)findViewById(R.id.tv_description_objectif_titre);
         titre.setText(objectif.getNom());
-        researchCorrespondingEventID();
         setListerners();
-        Log.d("EVENT ID", toString().valueOf(eventID));
     }
 
     /**
@@ -90,54 +101,25 @@ public class DescriptionActivity extends AppCompatActivity {
      * Methode qui va supprimer l'evenement correspondant à l'objectif dans le calendrier principal
      */
     private void deleteObjInCalendar(){
-        ContentResolver cr = getContentResolver();
-        ContentValues values = new ContentValues();
         Uri deleteUri = null;
-        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
         int rows = getContentResolver().delete(deleteUri, null, null);
-        Log.d("Rows deleted: ", toString().valueOf(rows));
+        //Log.e("SUPPRESION DE ", objectif.toString());
+        //boolean x = ObjectifManager.getObjectifs(this).remove(objectif);
+        //Log.e("SUPPRESION DE ", String.valueOf(x));
     }
 
     /**
      * Methode qui va mettre à jour l'evenement correspondant a l'objectif dans le calendrier principal
      */
     private void updateObjInCalendar(){
-        ContentResolver cr = getContentResolver();
+        objectif.setDescription(description.getText().toString());
         ContentValues values = new ContentValues();
         Uri updateUri = null;
         values.put(CalendarContract.Events.DESCRIPTION, description.getText().toString());
-        updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+        updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
         getContentResolver().update(updateUri, values, null, null); //retourne le nombre de rows updated
     }
-
-
-    /**
-     * Methode qui va rechercher l'evenement dans le calendrier afin d'en retirer son ID
-     */
-    private void researchCorrespondingEventID(){
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(objectif.getDateDebut().getYear(), objectif.getDateDebut().getMonth(), objectif.getDateDebut().getDate(), objectif.getDateDebut().getHours()+1, objectif.getDateDebut().getMinutes());
-        long startMillis = beginTime.getTimeInMillis();
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(objectif.getDateFin().getYear(), objectif.getDateFin().getMonth(), objectif.getDateFin().getDate(), objectif.getDateFin().getHours()+2, objectif.getDateFin().getMinutes());
-        long endMillis = endTime.getTimeInMillis();
-        Cursor cur = null;
-        ContentResolver cr = getContentResolver();
-        String selection = CalendarContract.Instances.TITLE + " = ?"; //construct the query
-        String[] selectionArgs = new String[] {objectif.getNom() };
-        Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-        ContentUris.appendId(builder, startMillis);
-        ContentUris.appendId(builder, endMillis);
-        cur =  cr.query(builder.build(), //submit the query
-                INSTANCE_PROJECTION,
-                selection,
-                selectionArgs,
-                null);
-        while (cur.moveToNext()) {
-            eventID = cur.getLong(PROJECTION_ID_INDEX);
-        }
-    }
-
 
     /**
      * Methode qui cree une notification lors de la creation d'un objectif

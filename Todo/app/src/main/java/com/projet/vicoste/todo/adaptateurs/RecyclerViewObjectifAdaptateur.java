@@ -8,14 +8,12 @@ package com.projet.vicoste.todo.adaptateurs;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.projet.vicoste.todo.BaseApplication;
 import com.projet.vicoste.todo.DescriptionActivity;
 import com.projet.vicoste.todo.R;
 import com.projet.vicoste.todo.metier.Objectif;
@@ -29,7 +27,7 @@ public class RecyclerViewObjectifAdaptateur extends RecyclerView.Adapter< Recycl
      */
     private List<Objectif> objectifs;
 
-    // Provide a suitable constructor (depends on the kind of dataset)
+    /** Provide a suitable constructor (depends on the kind of dataset)*/
     public RecyclerViewObjectifAdaptateur(List<Objectif> myDataset)
     {
         objectifs = myDataset;
@@ -37,7 +35,7 @@ public class RecyclerViewObjectifAdaptateur extends RecyclerView.Adapter< Recycl
 
 
 
-    // Create new views (invoked by the layout manager)
+    /** Create new views (invoked by the layout manager) */
     @Override
     public  RecyclerViewObjectifAdaptateur.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                   int viewType) {
@@ -48,15 +46,19 @@ public class RecyclerViewObjectifAdaptateur extends RecyclerView.Adapter< Recycl
     }
 
 
-
-    // Replace the contents of a view (invoked by the layout manager)
-    // - get element from your dataset at this position
-    // - replace the contents of the view with that element
+    /**
+     * Replace the contents of a view (invoked by the layout manager)
+     * get element from your dataset at this position
+     * replace the contents of the view with that element
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.tvTitreObj.setText(objectifs.get(position).getNom());
         holder.tvDateObj.setText(objectifs.get(position).getDateDebut().getDate() + "/" + objectifs.get(position).getDateDebut().getMonth() + "/" + objectifs.get(position).getDateDebut().getYear());
     }
+
 
 
 
