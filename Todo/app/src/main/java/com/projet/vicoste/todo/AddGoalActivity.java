@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -17,12 +16,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.projet.vicoste.todo.metier.Objectif;
+import com.projet.vicoste.todo.modele.Objectif;
 import com.projet.vicoste.todo.metier.ObjectifManager;
 
 import java.util.Calendar;
@@ -36,6 +36,11 @@ import java.util.Date;
 public class AddGoalActivity extends AppCompatActivity {
 
     //***********************************PARAMS********************************
+    /**
+     * Id du calendrier principal du téléphone
+     */
+    private static final int PRINCIPAL_CALENDAR_ID = 1;
+
     /**
      * numéro caractérisant la permission d'écrire dans le calendrier
      */
@@ -90,7 +95,7 @@ public class AddGoalActivity extends AppCompatActivity {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.notification_icon)
+                        .setSmallIcon(R.drawable.clock)
                         .setContentTitle("Bonne chance")
                         .setContentText("Clapiticlapiticlap")
                 .setContentIntent(pendingIntent);
@@ -108,9 +113,11 @@ public class AddGoalActivity extends AppCompatActivity {
     public void creerObjectif(){
         Date date = new Date(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
         if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return;}
-        if(date.getDate() < (new Date()).getDate()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
+        if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
         objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
         checkForAddEvent();
+        //objectif.getDateDebut().setMonth(objectif.getDateDebut().getMonth()+1);
+        //objectif.getDateFin().setMonth(objectif.getDateFin().getMonth()+1);
         ObjectifManager.getObjectifs(this).add(objectif);
     }
 
@@ -143,7 +150,6 @@ public class AddGoalActivity extends AppCompatActivity {
      * Methode d'insertion dans le calendar principal du mobile
      */
     private void insertIntoCalendar() {
-        long calID = 1;
         long startMillis = 0;
         long endMillis = 0;
         Calendar beginTime = Calendar.getInstance();
@@ -158,9 +164,11 @@ public class AddGoalActivity extends AppCompatActivity {
         values.put(CalendarContract.Events.DTEND, endMillis);
         values.put(CalendarContract.Events.TITLE, objectif.getNom());
         values.put(CalendarContract.Events.DESCRIPTION, objectif.getDescription());
-        values.put(CalendarContract.Events.CALENDAR_ID, calID);
+        values.put(CalendarContract.Events.CALENDAR_ID, PRINCIPAL_CALENDAR_ID);
         values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe");
         @SuppressWarnings("MissingPermission") Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+        Log.e("INSERTION ", String.valueOf(uri.getPathSegments().get(1)));
+        objectif.setId(Integer.valueOf(uri.getPathSegments().get(1)));
     }
 
     /**

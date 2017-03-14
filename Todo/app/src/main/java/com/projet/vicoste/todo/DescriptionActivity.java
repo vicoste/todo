@@ -1,33 +1,26 @@
 package com.projet.vicoste.todo;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.projet.vicoste.todo.metier.Objectif;
+import com.projet.vicoste.todo.modele.Objectif;
 import com.projet.vicoste.todo.metier.ObjectifManager;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Lou on 07/02/2017.
@@ -68,7 +61,7 @@ public class DescriptionActivity extends AppCompatActivity {
         description = (EditText)findViewById(R.id.et_description_objectif_contenu);
         description.setText(objectif.getDescription());
         date = (TextView) findViewById(R.id.tv_description_objectif_date);
-        date.setText(objectif.getDateDebut().getDate() + "/" + objectif.getDateDebut().getMonth() + "/" + objectif.getDateDebut().getYear());
+        date.setText(SimpleDateFormat.getDateInstance().format(objectif.getDateDebut()).toString());
         titre = (TextView)findViewById(R.id.tv_description_objectif_titre);
         titre.setText(objectif.getNom());
         setListerners();
@@ -84,10 +77,9 @@ public class DescriptionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(deleteObjInCalendar())
-
                 createValidateNotification();
+                setResult(Activity.RESULT_OK);
                 finish();
-
             }
         });
         buttonValidReturn.setOnClickListener(new View.OnClickListener() {
@@ -103,24 +95,25 @@ public class DescriptionActivity extends AppCompatActivity {
      * Methode qui va supprimer l'evenement correspondant à l'objectif dans le calendrier principal
      */
     private boolean deleteObjInCalendar(){
-        Uri deleteUri = null;
-        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
-        int rows = getContentResolver().delete(deleteUri, null, null);
-        Log.e("SUPPRESION DE ", objectif.toString());
-        return ObjectifManager.deleteObjectif(objectif);
-
+        if (objectif.getId() != -1){
+            Uri deleteUri = null;
+            deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
+            int rows = getContentResolver().delete(deleteUri, null, null);
+            return ObjectifManager.deleteObjectif(objectif);
+        }
+        return false;
     }
 
     /**
      * Methode qui va mettre à jour l'evenement correspondant a l'objectif dans le calendrier principal
      */
     private void updateObjInCalendar(){
-        objectif.setDescription(description.getText().toString());
-        ContentValues values = new ContentValues();
-        Uri updateUri = null;
-        values.put(CalendarContract.Events.DESCRIPTION, description.getText().toString());
-        updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
-        getContentResolver().update(updateUri, values, null, null); //retourne le nombre de rows updated
+            objectif.setDescription(description.getText().toString());
+            ContentValues values = new ContentValues();
+            Uri updateUri = null;
+            values.put(CalendarContract.Events.DESCRIPTION, description.getText().toString());
+            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
+            getContentResolver().update(updateUri, values, null, null); //retourne le nombre de rows updated
     }
 
     /**
@@ -132,7 +125,7 @@ public class DescriptionActivity extends AppCompatActivity {
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.notification_icon)
+                        .setSmallIcon(R.drawable.clock)
                         .setContentTitle("Quel talent !")
                         .setContentText("Encore un objectif de réussit ? Tu ne t'arrêtes plus !")
                         .setContentIntent(pendingIntent);
