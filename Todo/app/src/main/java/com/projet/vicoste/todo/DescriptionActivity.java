@@ -83,9 +83,11 @@ public class DescriptionActivity extends AppCompatActivity {
         buttonDeleteReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteObjInCalendar();
+                if(deleteObjInCalendar())
+
                 createValidateNotification();
                 finish();
+
             }
         });
         buttonValidReturn.setOnClickListener(new View.OnClickListener() {
@@ -100,13 +102,13 @@ public class DescriptionActivity extends AppCompatActivity {
     /**
      * Methode qui va supprimer l'evenement correspondant à l'objectif dans le calendrier principal
      */
-    private void deleteObjInCalendar(){
+    private boolean deleteObjInCalendar(){
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
         int rows = getContentResolver().delete(deleteUri, null, null);
-        //Log.e("SUPPRESION DE ", objectif.toString());
-        //boolean x = ObjectifManager.getObjectifs(this).remove(objectif);
-        //Log.e("SUPPRESION DE ", String.valueOf(x));
+        Log.e("SUPPRESION DE ", objectif.toString());
+        return ObjectifManager.deleteObjectif(objectif);
+
     }
 
     /**
@@ -138,6 +140,8 @@ public class DescriptionActivity extends AppCompatActivity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(42, mBuilder.build());
     }
+
+
 
 
 }

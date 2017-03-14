@@ -82,7 +82,7 @@ public class RecyclerViewObjectifAdaptateur extends RecyclerView.Adapter< Recycl
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, DescriptionActivity.class));
+                mContext.startActivity (new Intent(mContext, DescriptionActivity.class));
             }
         };
 
@@ -98,6 +98,7 @@ public class RecyclerViewObjectifAdaptateur extends RecyclerView.Adapter< Recycl
                     Intent intent = new Intent(v.getContext(),DescriptionActivity.class);
                     intent.putExtra("position", getAdapterPosition());
                     mContext.startActivity(intent);
+
                 }
             });
         }

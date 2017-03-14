@@ -1,9 +1,11 @@
 package com.projet.vicoste.todo.metier;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +25,7 @@ public class ObjectifManager {
     private static List<Objectif> objectifs = null;
 
     private static Context context;
+
 
 
     /**
@@ -60,6 +63,10 @@ public class ObjectifManager {
             objectifs.add(new Objectif(cursor.getInt(0), cursor.getString(1), cursor.getString(2),d1 ,d2));
         }
         cursor.close();
+    }
+
+    public static boolean deleteObjectif(Objectif o){
+        return objectifs.remove(o);
     }
 
 }

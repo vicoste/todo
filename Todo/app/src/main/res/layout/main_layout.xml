@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
 
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,6 +17,8 @@
             android:text="@string/mesobjectifs" />
 
 
+
+
         <android.support.v7.widget.RecyclerView
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
@@ -24,6 +27,8 @@
            android:layout_below="@+id/tv_mesobjectifs"
            android:layout_alignParentLeft="true"
            android:layout_alignParentStart="true"/>
+
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_main_go_add_goal"
