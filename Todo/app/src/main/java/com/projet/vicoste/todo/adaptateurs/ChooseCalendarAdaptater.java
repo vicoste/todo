@@ -1,6 +1,7 @@
 package com.projet.vicoste.todo.adaptateurs;
 
 import android.content.Context;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.projet.vicoste.todo.R;
 import com.projet.vicoste.todo.modele.Objectif;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -52,7 +54,7 @@ public class ChooseCalendarAdaptater  extends RecyclerView.Adapter< ChooseCalend
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.tvTitreCalendar.setText(calendars.get(position).getNom());
+        holder.tvTitreCalendar.setText(calendars.get(position).toString());
     }
 
 

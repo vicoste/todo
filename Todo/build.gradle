@@ -16,6 +16,7 @@ allprojects {
     repositories {
         jcenter()
     }
+    buildDir{'/tmp/Todo'}
 }
 
 task clean(type: Delete) {

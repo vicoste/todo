@@ -27,6 +27,7 @@ import com.projet.vicoste.todo.metier.ObjectifManager;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Lou on 07/02/2017.
@@ -110,14 +111,11 @@ public class AddGoalActivity extends AppCompatActivity {
      *    qu'évenement dans le calendrier principal de l'utilisateur
      *  - Sinon, un message informatif sur l'erreur apparaît et on revient là où on en était avant l'essai de la création d'un objectif
      */
-    public void creerObjectif(){
-        Date date = new Date(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
+   public void creerObjectif(){
+        Date date = new Date( datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
         if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return;}
         if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
         objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
-        checkForAddEvent();
-        //objectif.getDateDebut().setMonth(objectif.getDateDebut().getMonth()+1);
-        //objectif.getDateFin().setMonth(objectif.getDateFin().getMonth()+1);
         ObjectifManager.getObjectifs(this).add(objectif);
     }
 

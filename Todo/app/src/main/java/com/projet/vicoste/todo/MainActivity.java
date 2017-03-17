@@ -1,3 +1,4 @@
+//PETIT BUG : LA PREMIERE FOIS QUE L'APPLICATION EST LANCÉE, L'ACCES AU CALENDRIER EST DEMANDÉ, ET LA LISTE DES OBJECTIF NE SE CHARGE PAS
 package com.projet.vicoste.todo;
 
 import android.app.Activity;
