@@ -61,11 +61,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        if (calendarID == -1) {
-            DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
-            dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
-            calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        }
+
         Log.e("ID sharedPred MAIN", String.valueOf(calendarID));
         //sharedPreferences pour savoir si un calendar a été choisi
         //si calendrier choisi, alors l'utiliser. sinon, choisir un nouveau calendrier
@@ -79,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         if (checkForAddEvent()) {
             ObjectifManager.getObjectifs(this, calendarID);
             mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
+            if (calendarID == -1) {
+                DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
+                dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
+                calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
+            }
         }
         mRecyclerView.setAdapter(mAdapter);
         FloatingActionButton button_add = (FloatingActionButton)findViewById(R.id.fab_main_go_add_goal);
