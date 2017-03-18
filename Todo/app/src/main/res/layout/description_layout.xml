@@ -70,7 +70,16 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginBottom="@dimen/fab_margin"
+            android:src="@drawable/modification"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/bt_description_succes_obj"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
             android:src="@drawable/validate"/>
+
 
     </LinearLayout>
 
