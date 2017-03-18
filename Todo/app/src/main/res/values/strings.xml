@@ -12,4 +12,5 @@
     <string name="But">But</string>
     <string name="dead_line">Vous avez fixé votre objectif pour le :</string>
     <string name="supprimer">Nope</string>
+    <string name="calendarPreferences">calendarPreferencesID</string>
 </resources>

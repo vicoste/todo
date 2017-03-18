@@ -37,9 +37,9 @@ public class AddGoalActivity extends AppCompatActivity {
 
     //***********************************PARAMS********************************
     /**
-     * Id du calendrier principal du téléphone
+     * Id du calendrier que l'utilisateur utilise
      */
-    private static final int PRINCIPAL_CALENDAR_ID = 1;
+    private static int PRINCIPAL_CALENDAR_ID;
 
     /**
      * numéro caractérisant la permission d'écrire dans le calendrier
@@ -84,6 +84,11 @@ public class AddGoalActivity extends AppCompatActivity {
                 creerObjectif();
             }
         });
+
+        //PRINCIPAL_CALENDAR_ID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
+        PRINCIPAL_CALENDAR_ID = 1;
+
+        Log.e("ID add goal : ", String.valueOf(PRINCIPAL_CALENDAR_ID));
     }
 
     /**
@@ -118,7 +123,7 @@ public class AddGoalActivity extends AppCompatActivity {
         checkForAddEvent();
         //objectif.getDateDebut().setMonth(objectif.getDateDebut().getMonth()+1);
         //objectif.getDateFin().setMonth(objectif.getDateFin().getMonth()+1);
-        ObjectifManager.getObjectifs(this).add(objectif);
+        ObjectifManager.getObjectifs(this, PRINCIPAL_CALENDAR_ID).add(objectif);
     }
 
     /**return true si le titre est correct

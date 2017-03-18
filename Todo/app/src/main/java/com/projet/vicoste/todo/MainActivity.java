@@ -2,6 +2,7 @@ package com.projet.vicoste.todo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.view.View;
 
 import com.projet.vicoste.todo.fragment.SelectCalendarDialogFragment;
 import com.projet.vicoste.todo.adaptateurs.RecyclerViewObjectifAdaptater;
+import com.projet.vicoste.todo.modele.Calendar;
 import com.projet.vicoste.todo.modele.Objectif;
 import com.projet.vicoste.todo.metier.ObjectifManager;
 
@@ -27,7 +30,7 @@ import com.projet.vicoste.todo.metier.ObjectifManager;
  * Activité basée sur la visualisation de tout les objectifs de l'utilisateur
  */
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewObjectifAdaptater.RecyclerViewObjectifAdaptaterCallback {
+public class MainActivity extends AppCompatActivity implements RecyclerViewObjectifAdaptater.RecyclerViewObjectifAdaptaterCallback, SelectCalendarDialogFragment.NoticeDialogListener {
 
     //*******************************PARAMS**********************
     /**
@@ -50,25 +53,31 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     private RecyclerView.Adapter mAdapter;
 
+    private int calendarID;
+
     //*********************************METHODS*********************
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
+        while (calendarID == -1) {
+            DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
+            dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
+            calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
+        }
+        Log.e("ID sharedPred MAIN", String.valueOf(calendarID));
         //sharedPreferences pour savoir si un calendar a été choisi
         //si calendrier choisi, alors l'utiliser. sinon, choisir un nouveau calendrier
 
 
-        DialogFragment test = new SelectCalendarDialogFragment();
-        test.show(getSupportFragmentManager(), "test");
 
 
         setContentView(R.layout.main_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.lv_todolist);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager((this)));
         if (checkForAddEvent()) {
-            ObjectifManager.getObjectifs(this);
-            mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this), this);
-            getAllCalendars();
+            ObjectifManager.getObjectifs(this, calendarID);
+            mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
         }
         mRecyclerView.setAdapter(mAdapter);
         FloatingActionButton button_add = (FloatingActionButton)findViewById(R.id.fab_main_go_add_goal);
@@ -129,20 +138,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
     @Override
     public void onItemClicked(Objectif objectif) {
         Intent intent = new Intent(this, DescriptionActivity.class);
-        intent.putExtra("position", ObjectifManager.getObjectifs(this).indexOf(objectif));
+        intent.putExtra("position", ObjectifManager.getObjectifs(this, calendarID).indexOf(objectif));
         startActivityForResult(intent, CONSTANT_DESCRIPTION_ACTIVITY);
     }
 
 
-    private static String[] eventProjection = new String[]{ CalendarContract.Events.CALENDAR_ID, CalendarContract.Events.CALENDAR_DISPLAY_NAME};
-    private void getAllCalendars(){
-            @SuppressWarnings("MissingPermission") Cursor cursor = getContentResolver().query(CalendarContract.Events.CONTENT_URI, eventProjection, null, null, CalendarContract.Events.CALENDAR_DISPLAY_NAME);
-            while (cursor.moveToNext()) {
-                    Log.e("ID CALENDAR ", cursor.getString(0) + "   " + cursor.getString(1));
-            }
-            cursor.close();
-    }
+    /**
+     * Methode appelée lors d'un clic sur un calendrier proposé dans le dialog de sélection
+     * @param calendar
+     */
+    @Override
+    public void onDialogCalendarClick(Calendar calendar) {
+        Log.e("Calendar envoye: ", calendar.toString());
+        Log.e("ID CALENDAR RETENU :", String.valueOf(calendar.getId()));
 
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(getString(R.string.calendarPreferences), calendar.getId());
+        boolean result = editor.commit();
+        Log.e("RESULTAT ENREGISTREMENT", String.valueOf(result));
+    }
 }
 
 

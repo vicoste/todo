@@ -13,6 +13,7 @@ import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -51,12 +52,17 @@ public class DescriptionActivity extends AppCompatActivity {
      */
     private TextView date, titre;
 
+    private int calendarID;
 
     //****************************METHODS*******************************
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        objectif = (ObjectifManager.getObjectifs(this).get((Integer)(getIntent().getExtras().get("position"))));
+
+        //calendarID =  getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
+        calendarID = 1;
+
+        objectif = (ObjectifManager.getObjectifs(this, calendarID).get((Integer)(getIntent().getExtras().get("position"))));
         setContentView(R.layout.description_layout);
         description = (EditText)findViewById(R.id.et_description_objectif_contenu);
         description.setText(objectif.getDescription());
@@ -95,13 +101,11 @@ public class DescriptionActivity extends AppCompatActivity {
      * Methode qui va supprimer l'evenement correspondant à l'objectif dans le calendrier principal
      */
     private boolean deleteObjInCalendar(){
-        if (objectif.getId() != -1){
             Uri deleteUri = null;
             deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
             int rows = getContentResolver().delete(deleteUri, null, null);
+            Log.e("Row deleted ", String.valueOf(rows));
             return ObjectifManager.deleteObjectif(objectif);
-        }
-        return false;
     }
 
     /**
