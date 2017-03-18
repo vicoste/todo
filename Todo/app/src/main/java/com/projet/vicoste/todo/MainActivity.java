@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        while (calendarID == -1) {
+        if (calendarID == -1) {
             DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
             dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
             calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);

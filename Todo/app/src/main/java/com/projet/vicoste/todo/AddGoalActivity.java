@@ -122,6 +122,7 @@ public class AddGoalActivity extends AppCompatActivity {
         if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
         objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
         //objectif.getDateFin().setMonth(objectif.getDateFin().getMonth()+1);
+       checkForAddEvent();
         ObjectifManager.getObjectifs(this, PRINCIPAL_CALENDAR_ID).add(objectif);
     }
 
