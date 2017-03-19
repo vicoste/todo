@@ -42,18 +42,19 @@ public class SelectCalendarDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final List<Calendar> calendars = CalendarManager.getCalendars(getContext());
         for (Calendar c : calendars){
-            calendars_nonConvert.add(c.toString());
+            if(!calendars_nonConvert.contains(c.toString())){
+                calendars_nonConvert.add(c.toString());
+            }
         }
         calendars_str = Arrays.copyOf(calendars_nonConvert.toArray(), calendars_nonConvert.toArray().length, String[].class);
-        Log.e("Calendars", calendars_str.toString());
 
         builder.setTitle("Choisir son calendrier.")
-                .setItems( calendars_str, new DialogInterface.OnClickListener() {
+               .setItems( calendars_str, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int which) {
-                       Log.e("Element clique", String.valueOf(which));
                         mListener.onDialogCalendarClick(calendars.get(which));
                      }});
         return builder.create();

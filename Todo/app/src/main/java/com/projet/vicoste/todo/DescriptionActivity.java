@@ -56,6 +56,9 @@ public class DescriptionActivity extends AppCompatActivity {
      */
     private TextView date, titre;
 
+    /**
+     * ID du calendar qu'utilise l'utilisateur
+     */
     private int calendarID;
 
     //****************************METHODS*******************************
@@ -64,7 +67,8 @@ public class DescriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //calendarID =  getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        calendarID = 1;
+        //calendarID = 1;
+        calendarID = (Integer)(getIntent().getExtras().get("CALENDAR"));
 
         objectif = (ObjectifManager.getObjectifs(this, calendarID).get((Integer)(getIntent().getExtras().get("position"))));
         setContentView(R.layout.description_layout);

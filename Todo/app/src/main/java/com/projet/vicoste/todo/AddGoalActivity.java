@@ -74,6 +74,7 @@ public class AddGoalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.add_goal_layout);
         FloatingActionButton addButton = (FloatingActionButton)findViewById(R.id.bt_valid_new_obj);
         description = (EditText) findViewById(R.id.et_contenu_new_obj);
@@ -87,7 +88,7 @@ public class AddGoalActivity extends AppCompatActivity {
         });
 
         //PRINCIPAL_CALENDAR_ID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        PRINCIPAL_CALENDAR_ID = 1;
+        PRINCIPAL_CALENDAR_ID = (Integer)(getIntent().getExtras().get("CALENDAR"));
 
         Log.e("ID add goal : ", String.valueOf(PRINCIPAL_CALENDAR_ID));
     }
@@ -122,7 +123,7 @@ public class AddGoalActivity extends AppCompatActivity {
         if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
         objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
         //objectif.getDateFin().setMonth(objectif.getDateFin().getMonth()+1);
-       checkForAddEvent();
+        checkForAddEvent();
         ObjectifManager.getObjectifs(this, PRINCIPAL_CALENDAR_ID).add(objectif);
     }
 
@@ -199,5 +200,7 @@ public class AddGoalActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
 }
