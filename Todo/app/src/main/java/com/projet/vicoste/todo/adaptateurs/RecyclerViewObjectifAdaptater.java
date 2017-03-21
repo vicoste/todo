@@ -2,11 +2,13 @@ package com.projet.vicoste.todo.adaptateurs;
 
 /**
  * Created by Lou on 04/03/2017.
+ * Adaptateur de
  */
 
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,11 @@ import android.widget.TextView;
 import com.projet.vicoste.todo.R;
 import com.projet.vicoste.todo.modele.Objectif;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class RecyclerViewObjectifAdaptater extends RecyclerView.Adapter< RecyclerViewObjectifAdaptater.ViewHolder> {
+public class RecyclerViewObjectifAdaptater extends RecyclerView.Adapter<RecyclerViewObjectifAdaptater.ViewHolder> {
 
     /**
      * Liste de tout les objectifs
@@ -55,21 +59,16 @@ public class RecyclerViewObjectifAdaptater extends RecyclerView.Adapter< Recycle
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.tvTitreObj.setText(objectifs.get(position).getNom());
-        holder.tvDateObj.setText(objectifs.get(position).getDateDebut().getDate() + "/" + (objectifs.get(position).getDateDebut().getMonth() + 1) + "/" + objectifs.get(position).getDateDebut().getYear());
-
+        holder.tvDateObj.setText(DateFormat.getDateInstance().format(objectifs.get(position).getDateDebut()));
         holder.ibGoToDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 if (callback != null) {
                     callback.onItemClicked(objectifs.get(position));
                 }
-
             }
         });
     }
-
-
-
 
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -77,6 +76,8 @@ public class RecyclerViewObjectifAdaptater extends RecyclerView.Adapter< Recycle
     public int getItemCount() {
         return objectifs.size();
     }
+
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -86,18 +87,23 @@ public class RecyclerViewObjectifAdaptater extends RecyclerView.Adapter< Recycle
         public final TextView tvTitreObj;
         public final TextView tvDateObj;
         public final ImageButton ibGoToDescription;
-        private Context mContext;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mContext = itemView.getContext();
             tvTitreObj = (TextView) itemView.findViewById(R.id.tv_title_obj_cell_recycler_view);
             tvDateObj = (TextView) itemView.findViewById(R.id.tv_date_obj_cell_recycler_view);
             ibGoToDescription = (ImageButton) itemView.findViewById(R.id.ib_go_description);
         }
     }
 
+    /**
+     * Interface qui sera implémentée par les activités utilisant la recycler view
+     */
     public interface RecyclerViewObjectifAdaptaterCallback {
+        /**
+         * Methode definissant ce qu'il se passe lors d'un clic sur un item
+         * @param objectif objectif concerné
+         */
         void onItemClicked(Objectif objectif);
     }
 

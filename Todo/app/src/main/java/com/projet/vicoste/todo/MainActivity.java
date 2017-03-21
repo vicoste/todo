@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -56,28 +57,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     private RecyclerView.Adapter mAdapter;
 
+
+    /**
+     * ID du calendrier enregistré dans les sharedPreferences // ID choisit par l'utilisateur
+     */
     private int calendarID;
 
-    private  boolean hasPermission = false;
 
     //*********************************METHODS*********************
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-
-        //Log.e("ID sharedPref MAIN", String.valueOf(calendarID));
-        //sharedPreferences pour savoir si un calendar a été choisi
-        //si calendrier choisi, alors l'utiliser. sinon, choisir un nouveau calendrier
         setContentView(R.layout.main_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.lv_todolist);
         mRecyclerView.setLayoutManager(new LinearLayoutManager((this)));
-        if (checkForAddEvent()) {
-            ObjectifManager.getObjectifs(this, calendarID);
-            mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
-            mRecyclerView.setAdapter(mAdapter);
-        }
         FloatingActionButton button_add = (FloatingActionButton)findViewById(R.id.fab_main_go_add_goal);
+        FloatingActionButton button_settings = (FloatingActionButton) findViewById(R.id.fab_main_settings);
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,26 +82,36 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
                     intent.putExtra("CALENDAR", calendarID);
                     startActivityForResult(intent, 1);
                 } else {
-                    Toast.makeText(getBaseContext(), "Il va peut-être falloir accepter les droits mon petit.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "Il va peut-être falloir accepter les droits mon petit.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        button_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkForAddEvent()){
+                    DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
+                    dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
                 }
             }
         });
 
     }
 
+
     /**
-     * OnResume (android bug in request permission)
+     * Met a jour les objectifs si les droits le permettent
      */
     @Override
-    protected void onResume() {
-        super.onResume();
-        //Log.e("OK", "OKKKK");
-        if(hasPermission && calendarID == -1){
-            DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
-            dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
+    protected void onStart() {
+        super.onStart();
+        if (checkForAddEvent()) {
+            ObjectifManager.updateObjectifs(this, calendarID);
+            mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
+            mRecyclerView.setAdapter(mAdapter);
         }
-
     }
+
 
     /**
      * Methode pour quand l'activite reprend la main suite a la fermeture d'une autre
@@ -145,15 +151,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         return true;
     }
 
+    /**
+     * Methode donnant les resultats de la permission pour ecrire/lire dans le calendrier
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for (int i=0 ; i<permissions.length ; ++i){
-            if (permissions[i].equals(android.Manifest.permission.WRITE_CALENDAR) &&
-                    grantResults[i] == 0 &&
-                    calendarID == -1){
-                hasPermission = true;
-            }
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_CALENDAR:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (calendarID == -1) {
+                        DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
+                        dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
+                    }
+                }
+                break;
         }
     }
 
@@ -172,21 +188,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
 
     /**
      * Methode appelée lors d'un clic sur un calendrier proposé dans le dialog de sélection
-     * @param calendar
+     * @param calendar calendar cliqué par l'utilisateur
      */
     @Override
     public void onDialogCalendarClick(Calendar calendar) {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(getString(R.string.calendarPreferences), calendar.getId());
-        boolean result = editor.commit();
+        editor.commit();
         calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
+        //Log.e("Nouveau ID ", calendar.getName() +"  "+ calendarID + "  " +calendar.getId());
         if (checkForAddEvent()) {
-            ObjectifManager.getObjectifs(this, calendarID);
+            ObjectifManager.updateObjectifs(this, calendarID);
             mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
             mRecyclerView.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
         }
-        //System.out.println(calendarID);
     }
 }
 

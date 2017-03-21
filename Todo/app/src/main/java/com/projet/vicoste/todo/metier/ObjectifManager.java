@@ -3,10 +3,12 @@ package com.projet.vicoste.todo.metier;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.CalendarContract;
+import android.util.Log;
 
 import com.projet.vicoste.todo.R;
 import com.projet.vicoste.todo.modele.Objectif;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +37,11 @@ public class ObjectifManager {
     private static int calendarID;
 
     /**
+     * Attribut qui va définir la méthode dont vont être triées les données à chercher
+     */
+    private static String orderBy =  CalendarContract.Events.DTSTART;
+
+    /**
      * projection de ce que l'on va vouloir récupérer pour les evenements dans le calendrier
      */
     private static String[] eventProjection = new String[]{CalendarContract.Events._ID, CalendarContract.Events.TITLE,
@@ -54,6 +61,30 @@ public class ObjectifManager {
             return objectifs;
         }
 
+    /**
+     * Met a jour la liste des objectifs de l'application
+     */
+    public static void updateObjectifs(Context c, int IDcalendar) {
+        calendarID = IDcalendar;
+        context = c;
+        if (objectifs != null){
+            objectifs = new ArrayList<>();
+            objectifInitialization();
+        }else{
+            getObjectifs(c, IDcalendar);
+        }
+
+    }
+
+    /**
+     * methode d'affichage de tout les objectifs
+     */
+    private static void affichObj(){
+        if (objectifs == null)  return;
+        for (Objectif o: objectifs) {
+            Log.e("Objectif ::", o.getNom());
+        }
+    }
 
     /**
      * constructeur privé
@@ -68,7 +99,7 @@ public class ObjectifManager {
     private static void objectifInitialization() {
         String selection = "((" + CalendarContract.Instances.CALENDAR_ID + " = ?))"; //construct the query
         String[] selectionArgs = new String[]{String.valueOf(calendarID)};
-        @SuppressWarnings("MissingPermission") Cursor cursor = context.getContentResolver().query(CalendarContract.Events.CONTENT_URI, eventProjection, selection, selectionArgs, null);
+        @SuppressWarnings("MissingPermission") Cursor cursor = context.getContentResolver().query(CalendarContract.Events.CONTENT_URI, eventProjection, selection, selectionArgs, orderBy);
         while (cursor.moveToNext()) {
             Date d1 = new Date(cursor.getLong(3));
             Date d2 = new Date(cursor.getLong(4));
@@ -83,6 +114,7 @@ public class ObjectifManager {
      * @return true si l'objectif a bien ete supprime, false sinon
      */
     public static boolean deleteObjectif(Objectif o){
+        //Log.e("Supr. date :", DateFormat.getDateInstance().format(o.getDateDebut()));
         return objectifs.remove(o);
     }
 

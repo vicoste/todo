@@ -26,6 +26,7 @@ import com.projet.vicoste.todo.metier.ObjectifManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Lou on 07/02/2017.
@@ -65,11 +66,7 @@ public class DescriptionActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //calendarID =  getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        //calendarID = 1;
         calendarID = (Integer)(getIntent().getExtras().get("CALENDAR"));
-
         objectif = (ObjectifManager.getObjectifs(this, calendarID).get((Integer)(getIntent().getExtras().get("position"))));
         setContentView(R.layout.description_layout);
         description = (EditText)findViewById(R.id.et_description_objectif_contenu);
@@ -127,15 +124,15 @@ public class DescriptionActivity extends AppCompatActivity {
      * @return
      */
     private boolean objectifValide() {
-        Date d = new Date();
-        if(objectif.getDateDebut().getYear() <= d.getYear()) return false;
-        Log.d(String.valueOf(d.getYear()),String.valueOf(objectif.getDateDebut().getYear()));
-        if(objectif.getDateDebut().getMonth() <= d.getMonth()) return false;
-        Log.d(String.valueOf(d.getMonth()),String.valueOf(objectif.getDateDebut().getMonth()));
-        if(objectif.getDateDebut().getDay() <= d.getDay()) return false;
-        Log.d(String.valueOf(d.getDay()),String.valueOf(objectif.getDateDebut().getDay()));
+        return (!(objectif.getDateDebut().getTime() <= (new GregorianCalendar()).getTime().getTime()));
+//        if(objectif.getDateDebut().getYear() <= d.getYear()) return false;
+//        Log.d(String.valueOf(d.getYear()),String.valueOf(objectif.getDateDebut().getYear()));
+//        if(objectif.getDateDebut().getMonth() <= d.getMonth()) return false;
+//        Log.d(String.valueOf(d.getMonth()),String.valueOf(objectif.getDateDebut().getMonth()));
+//        if(objectif.getDateDebut().getDay() <= d.getDay()) return false;
+//        Log.d(String.valueOf(d.getDay()),String.valueOf(objectif.getDateDebut().getDay()));
 
-        return true;
+//        return true;
     }
 
     /**

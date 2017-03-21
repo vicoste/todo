@@ -11,29 +11,27 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".AddGoalActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
-        <activity android:name=".DescriptionActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name=".DescriptionActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
 
-        <meta-data android:name="com.google.android.calendar.API_KEY"
-            android:value="AIzaSyDgXZA6W_wrnMG2slHfa3YBSp3Dmk5Cj0g"/>
+        <meta-data
+            android:name="com.google.android.calendar.API_KEY"
+            android:value="AIzaSyDgXZA6W_wrnMG2slHfa3YBSp3Dmk5Cj0g" />
 
     </application>
 

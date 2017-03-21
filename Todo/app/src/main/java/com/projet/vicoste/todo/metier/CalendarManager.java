@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by Lou on 17/03/2017.
+ * Classe qui va contrôler la gestion des calendriers de l'application
  */
 
 public class CalendarManager {

@@ -59,7 +59,6 @@ public class Objectif {
         this.description = description;
         this.dateDebut = dateDebut;
         if (dateFin == null){
-            dateDebut.setHours(dateDebut.getHours() + 5);
             this.dateFin = dateDebut;
         }
     }
@@ -78,7 +77,7 @@ public class Objectif {
     /**
      * redefinition de la méthode equals spécifique aux objectifs
      * @param o
-     * @return
+     * @return true si egalité, false sinon
      */
     @Override
     public boolean equals(Object o) {

@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Created by logrunner on 14/03/17.
+ * Dialog pour le choix d'un calendrier
  */
 public class SelectCalendarDialogFragment extends DialogFragment {
     private static String[] calendars_str;

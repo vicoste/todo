@@ -63,14 +63,14 @@ public class AddGoalActivity extends AppCompatActivity {
      */
     private DatePicker datePicker;
 
-    /**
-     * Objectif qui va être ajouté par l'utilisateur
-     */
-    private Objectif objectif;
-
 
 
     //**********************************METHODS***************************
+
+    /**
+     * Methode de création de l'activite
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,14 +83,10 @@ public class AddGoalActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                creerObjectif();
+                checkForAddEvent();
             }
         });
-
-        //PRINCIPAL_CALENDAR_ID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
         PRINCIPAL_CALENDAR_ID = (Integer)(getIntent().getExtras().get("CALENDAR"));
-
-        Log.e("ID add goal : ", String.valueOf(PRINCIPAL_CALENDAR_ID));
     }
 
     /**
@@ -111,21 +107,6 @@ public class AddGoalActivity extends AppCompatActivity {
         mNotificationManager.notify(42, mBuilder.build());
     }
 
-    /**
-     *methode permettant de creer et d'ajouter l'objectif definit par l'utilisateur à la liste de tout les objectifs.
-     *  - Si l'objectif est jugé comme acceptable ( si le titre est bien validé et que la date n'est pas inférieure à celle du jour) alors il est ajouté en tant
-     *    qu'évenement dans le calendrier principal de l'utilisateur
-     *  - Sinon, un message informatif sur l'erreur apparaît et on revient là où on en était avant l'essai de la création d'un objectif
-     */
-   public void creerObjectif(){
-        Date date = new Date( datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth());
-        if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return;}
-        if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
-        objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
-        //objectif.getDateFin().setMonth(objectif.getDateFin().getMonth()+1);
-        checkForAddEvent();
-        ObjectifManager.getObjectifs(this, PRINCIPAL_CALENDAR_ID).add(objectif);
-    }
 
     /**return true si le titre est correct
      *  @return false si il est vide, true si ok
@@ -145,24 +126,21 @@ public class AddGoalActivity extends AppCompatActivity {
                         new String[]{android.Manifest.permission.WRITE_CALENDAR},
                         MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
         } else {
-            insertIntoCalendar();
-            Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();
-            createValidateNotification();
-            finish();
+            doJob();
         }
     }
 
     /**
      * Methode d'insertion dans le calendar principal du mobile
      */
-    private void insertIntoCalendar() {
+    private void insertIntoCalendar(Objectif objectif) {
         long startMillis = 0;
         long endMillis = 0;
         Calendar beginTime = Calendar.getInstance();
-        beginTime.set(objectif.getDateDebut().getYear(), objectif.getDateDebut().getMonth(), objectif.getDateDebut().getDate(), objectif.getDateDebut().getHours(), objectif.getDateDebut().getMinutes());
+        beginTime.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
         startMillis = beginTime.getTimeInMillis();
         Calendar endTime = Calendar.getInstance();
-        endTime.set(objectif.getDateFin().getYear(), objectif.getDateFin().getMonth(), objectif.getDateFin().getDate(), objectif.getDateFin().getHours(), objectif.getDateFin().getMinutes());
+        endTime.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
         endMillis = endTime.getTimeInMillis();
         ContentResolver cr = getContentResolver();
         ContentValues values = new ContentValues();
@@ -173,7 +151,6 @@ public class AddGoalActivity extends AppCompatActivity {
         values.put(CalendarContract.Events.CALENDAR_ID, PRINCIPAL_CALENDAR_ID);
         values.put(CalendarContract.Events.EVENT_TIMEZONE, "Europe");
         @SuppressWarnings("MissingPermission") Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-        Log.e("INSERTION ", String.valueOf(uri.getPathSegments().get(1)));
         objectif.setId(Integer.valueOf(uri.getPathSegments().get(1)));
     }
 
@@ -191,14 +168,24 @@ public class AddGoalActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    insertIntoCalendar();
-                    Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();
-                    createValidateNotification();
-                    finish();
+                    doJob();
                 }
                 return;
             }
         }
+    }
+
+    private void doJob() {
+        Date date = new GregorianCalendar(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth()).getTime();
+        if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return;}
+        if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
+        Objectif objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
+
+        insertIntoCalendar(objectif);
+        ObjectifManager.getObjectifs(this, PRINCIPAL_CALENDAR_ID).add(objectif);
+        Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();
+        createValidateNotification();
+        finish();
     }
 
 

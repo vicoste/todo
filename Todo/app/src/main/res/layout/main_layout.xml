@@ -40,4 +40,14 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/clock_add"/>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_main_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/fab_main_go_add_goal"
+            android:src="@drawable/settings"/>
+
 </RelativeLayout>
