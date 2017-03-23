@@ -2,6 +2,9 @@
 package com.projet.vicoste.todo;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +19,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +31,8 @@ import com.projet.vicoste.todo.adaptateurs.RecyclerViewObjectifAdaptater;
 import com.projet.vicoste.todo.modele.Calendar;
 import com.projet.vicoste.todo.modele.Objectif;
 import com.projet.vicoste.todo.metier.ObjectifManager;
+
+import java.util.Date;
 
 
 /**
@@ -46,6 +52,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      * Constante pour la recupération du resultat d'une fin d'activite
      */
     private static final int CONSTANT_DESCRIPTION_ACTIVITY = 2;
+
+    /**
+     * code requis pour l'envoit de notifications
+     */
+    private static final int REQUEST_CODE_NOTIFICATION = 0;
 
     /**
      * Recycler view où sont affichés tout les objectifs de l'application (master)
@@ -81,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         mRecyclerView.setLayoutManager(new LinearLayoutManager((this)));
         FloatingActionButton button_add = (FloatingActionButton)findViewById(R.id.fab_main_go_add_goal);
         FloatingActionButton button_settings = (FloatingActionButton) findViewById(R.id.fab_main_settings);
+
+        askValidation();
+
+
+
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,11 +112,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         button_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (checkForAddEvent()){
                     DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
                     dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
                 }
+
             }
+        });
+
+        mRecyclerView.setRecyclerListener(new RecyclerView.RecyclerListener() {
+            @Override
+            public void onViewRecycled(RecyclerView.ViewHolder holder) {
+                askValidation();
+            }
+
         });
 
     }
@@ -123,11 +149,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
     @Override
     protected void onStart() {
         super.onStart();
+
         if (checkForAddEvent()) {
             ObjectifManager.updateObjectifs(this, calendarID);
             mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
             mRecyclerView.setAdapter(mAdapter);
         }
+
+
     }
 
 
@@ -164,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
                 new String[]{android.Manifest.permission.WRITE_CALENDAR},
                 MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
         if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+
             return false;
         }
         return true;
@@ -217,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         editor.putInt(getString(R.string.calendarPreferences), calendar.getId());
         editor.commit();
         calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
-        //Log.e("Nouveau ID ", calendar.getName() +"  "+ calendarID + "  " +calendar.getId());
         if (checkForAddEvent()) {
             ObjectifManager.updateObjectifs(this, calendarID);
             mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
@@ -225,8 +254,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
             mAdapter.notifyDataSetChanged();
         }
     }
-}
 
+    /**
+     * demande a l'utilisateur si il a validé son obectif
+     */
+    private void askValidation(){
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+
+        int i =0;
+
+        for (Objectif objectif : ObjectifManager.getObjectifs(this,calendarID)){
+            if(objectif.isEnded()) {
+                i++;
+                createNotif(objectif, "cet objectif est terminé, l'avez-vous reussi ?", i);
+            }
+        }
+    }
+
+
+    private void createNotif(Objectif objectif,String textContent,int id){
+        Intent intent = new Intent(this, DescriptionActivity.class);
+        intent.putExtra("position", ObjectifManager.getObjectifs(this, calendarID).indexOf(objectif));
+        intent.putExtra("CALENDAR", calendarID);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE_NOTIFICATION,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder mBuilder =
+                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.clock)
+                        .setContentTitle(objectif.getNom())
+                        .setContentText(textContent)
+                        .setContentIntent(pendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(id, mBuilder.build());
+    }
+}
 
 
 

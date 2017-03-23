@@ -7,6 +7,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -85,10 +86,11 @@ public class DescriptionActivity extends AppCompatActivity {
         FloatingActionButton buttonValidReturn = (FloatingActionButton) findViewById(R.id.bt_description_valid_obj);
         FloatingActionButton buttonDeleteReturn = (FloatingActionButton) findViewById(R.id.bt_description_delete_obj);
         FloatingActionButton buttonSuccesReturn = (FloatingActionButton) findViewById(R.id.bt_description_succes_obj);
+        couleurBouton(buttonSuccesReturn);
         buttonDeleteReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
                 if(deleteObjInCalendar()){
                     Toast.makeText(getBaseContext(), "L'abandon favorise la SPA !!!", Toast.LENGTH_SHORT).show();
                     setResult(Activity.RESULT_OK);
@@ -100,18 +102,21 @@ public class DescriptionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateObjInCalendar();
+                Toast.makeText(getBaseContext(), "Objectif mis a jour", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
         buttonSuccesReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(objectifValide())
+                if(objectif.isEnded()){
+
                     if(deleteObjInCalendar()) {
                         createValidateNotification();
                         setResult(Activity.RESULT_OK);
                         finish();
                     }
+                }
                 else  Toast.makeText(getBaseContext(), "Petit tricheur...!!!", Toast.LENGTH_SHORT).show();
 
             }
@@ -120,62 +125,37 @@ public class DescriptionActivity extends AppCompatActivity {
     }
 
     /**
-     * verifie que l'utilisateur puisse bien valider son objectif en fonction de la date
-     * @return
+     *
+     * @param boutonSucces devient vert si le succes est validable
      */
-    private boolean objectifValide() {
-        return (!(objectif.getDateDebut().getTime() <= (new GregorianCalendar()).getTime().getTime()));
-//        if(objectif.getDateDebut().getYear() <= d.getYear()) return false;
-//        Log.d(String.valueOf(d.getYear()),String.valueOf(objectif.getDateDebut().getYear()));
-//        if(objectif.getDateDebut().getMonth() <= d.getMonth()) return false;
-//        Log.d(String.valueOf(d.getMonth()),String.valueOf(objectif.getDateDebut().getMonth()));
-//        if(objectif.getDateDebut().getDay() <= d.getDay()) return false;
-//        Log.d(String.valueOf(d.getDay()),String.valueOf(objectif.getDateDebut().getDay()));
-
-//        return true;
+    private void couleurBouton(FloatingActionButton boutonSucces){
+        if(objectif.isEnded())
+            boutonSucces.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorGreen)));
     }
 
     /**
      * Methode qui va supprimer l'evenement correspondant à l'objectif dans le calendrier principal
      */
     private boolean deleteObjInCalendar(){
-           // if(!suppressionAccorde()) return false;
-            Uri deleteUri = null;
-            deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
-            int rows = getContentResolver().delete(deleteUri, null, null);
-            Log.e("Row deleted ", String.valueOf(rows));
-            return ObjectifManager.deleteObjectif(objectif);
+        // if(!suppressionAccorde()) return false;
+        Uri deleteUri = null;
+        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
+        int rows = getContentResolver().delete(deleteUri, null, null);
+        Log.e("Row deleted ", String.valueOf(rows));
+        return ObjectifManager.deleteObjectif(objectif);
     }
 
-    /**
-     * demande a l'utilisateur une confirmation avant de supprimer un objectif
-     * @return
-     */
-    private boolean suppressionAccorde() {
-        ValidateDeleteFragment v = new ValidateDeleteFragment();
-        v.show(getSupportFragmentManager(),"supp");
-        while(v.getState()==0){
-            try {
-                wait(50);
-            } catch (InterruptedException e) {
-                Log.d("suppression","echec");
-                e.printStackTrace();
-            }
-        }
-        if (v.getState() == 1) return true;
-        else return false;
-    }
 
     /**
      * Methode qui va mettre à jour l'evenement correspondant a l'objectif dans le calendrier principal
      */
     private void updateObjInCalendar(){
-            objectif.setDescription(description.getText().toString());
-            ContentValues values = new ContentValues();
-            Uri updateUri = null;
-            values.put(CalendarContract.Events.DESCRIPTION, description.getText().toString());
-            updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
-            getContentResolver().update(updateUri, values, null, null); //retourne le nombre de rows updated
+        objectif.setDescription(description.getText().toString());
+        ContentValues values = new ContentValues();
+        Uri updateUri = null;
+        values.put(CalendarContract.Events.DESCRIPTION, description.getText().toString());
+        updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
+        getContentResolver().update(updateUri, values, null, null); //retourne le nombre de rows updated
     }
 
     /**
@@ -201,4 +181,3 @@ public class DescriptionActivity extends AppCompatActivity {
 
 
 }
-
