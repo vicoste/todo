@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     private RecyclerView.Adapter mAdapter;
 
-
     /**
      * ID du calendrier enregistré dans les sharedPreferences // ID choisit par l'utilisateur
      */
@@ -83,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
 
 
     //*********************************METHODS*********************
+
+    /**
+     * OnCreate
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,10 +96,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         mRecyclerView.setLayoutManager(new LinearLayoutManager((this)));
         FloatingActionButton button_add = (FloatingActionButton)findViewById(R.id.fab_main_go_add_goal);
         FloatingActionButton button_settings = (FloatingActionButton) findViewById(R.id.fab_main_settings);
-
         askValidation();
-
-
 
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,12 +113,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         button_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (checkForAddEvent()){
                     DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
                     dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
                 }
-
             }
         });
 
@@ -126,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
             public void onViewRecycled(RecyclerView.ViewHolder holder) {
                 askValidation();
             }
-
         });
 
     }
@@ -158,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
 
 
     }
-
 
     /**
      * Methode pour quand l'activite reprend la main suite a la fermeture d'une autre
@@ -222,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         }
     }
 
-
     /**
      * Action qui envoit l'id d'un objectif à la descriptionActivity lors du changement de vue
      * @param objectif objectif en question
@@ -234,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         intent.putExtra("CALENDAR", calendarID);
         startActivityForResult(intent, CONSTANT_DESCRIPTION_ACTIVITY);
     }
-
 
     /**
      * Methode appelée lors d'un clic sur un calendrier proposé dans le dialog de sélection
@@ -259,21 +254,27 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      * demande a l'utilisateur si il a validé son obectif
      */
     private void askValidation(){
+        if (checkForAddEvent()) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancelAll();
 
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
-
-        int i =0;
-
-        for (Objectif objectif : ObjectifManager.getObjectifs(this,calendarID)){
-            if(objectif.isEnded()) {
-                i++;
-                createNotif(objectif, "cet objectif est terminé, l'avez-vous reussi ?", i);
+            int i = 0;
+            for (Objectif objectif : ObjectifManager.getObjectifs(this, calendarID)) {
+                if (objectif.isEnded()) {
+                    i++;
+                    createNotif(objectif, "cet objectif est terminé, l'avez-vous reussi ?", i);
+                }
             }
         }
+
     }
 
-
+    /**
+     * Methode qui creer une notification qui renverra sur la description de l'objection concerné
+     * @param objectif Objectif concerné par la notification
+     * @param textContent Contenu que va contenir la notification
+     * @param id ID de la notification
+     */
     private void createNotif(Objectif objectif,String textContent,int id){
         Intent intent = new Intent(this, DescriptionActivity.class);
         intent.putExtra("position", ObjectifManager.getObjectifs(this, calendarID).indexOf(objectif));

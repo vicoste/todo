@@ -110,7 +110,6 @@ public class DescriptionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(objectif.isEnded()){
-
                     if(deleteObjInCalendar()) {
                         createValidateNotification();
                         setResult(Activity.RESULT_OK);
