@@ -1,6 +1,10 @@
 package com.projet.vicoste.todo.modele;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by vicoste on 10/02/17.
@@ -19,29 +23,33 @@ public class Objectif {
      * nom principal de l'objectif
      */
     private String nom;
-        public String getNom() {return nom;}
-        public void setNom(String nom) {this.nom = nom;}
+    public String getNom() {return nom;}
+    public void setNom(String nom) {this.nom = nom;}
 
     /**
      * description détaillée de l'objectif
      */
     private String description;
-        public String getDescription() {return description;}
-        public void setDescription(String contenue) {this.description = contenue;}
+    public String getDescription() {return description;}
+    public void setDescription(String contenue) {this.description = contenue;}
 
     /**
      * date de commencement de l'objectif
      */
     private Date dateDebut;
-        public Date getDateDebut() {return dateDebut;}
-        public void setDateDebut(Date date) {this.dateDebut = date;}
+    public Date getDateDebut() {return dateDebut;}
+    public void setDateDebut(Date date) {this.dateDebut = date;}
 
     /**
      * date de fin de l'objectif
      */
     private Date dateFin;
-        public Date getDateFin() {return dateFin;}
-        public void setDateFin(Date date) {this.dateFin = date;}
+    public Date getDateFin() {return dateFin;}
+    public void setDateFin(Date date) {this.dateFin = date;}
+
+    private Boolean ended = false;
+    public Boolean isEnded(){return ended;}
+
 
 
     //****************************CONSTRUCTORS***********************
@@ -61,6 +69,9 @@ public class Objectif {
         if (dateFin == null){
             this.dateFin = dateDebut;
         }
+        if (dateDebut.compareTo(new GregorianCalendar().getTime()) <= 0)
+            ended = true;
+
     }
 
 
@@ -106,5 +117,5 @@ public class Objectif {
         result = 31 * result + id;
         return result;
     }
-}
 
+}
