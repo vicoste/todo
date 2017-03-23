@@ -63,6 +63,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     private int calendarID;
 
+    /**
+     * Variable permettant de retenir si la permission a été accordé ou non.
+     * Variable mise en place suite à un bug d'android.
+     * http://stackoverflow.com/questions/33264031/calling-dialogfragments-show-from-within-onrequestpermissionsresult-causes
+     */
+    private Boolean hasPermission = false;
+
 
     //*********************************METHODS*********************
     @Override
@@ -98,6 +105,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
 
     }
 
+    /**
+     * OnResume
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (hasPermission && calendarID == -1){
+            DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
+            dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
+        }
+    }
 
     /**
      * Met a jour les objectifs si les droits le permettent
@@ -164,14 +182,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
             case MY_PERMISSIONS_REQUEST_WRITE_CALENDAR:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (calendarID == -1) {
-                        DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
-                        dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
-                    }
+                    hasPermission = true;
+//                    if (calendarID == -1) {
+//                        DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
+//                        dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
+//                    }
                 }
                 break;
         }
     }
+
 
     /**
      * Action qui envoit l'id d'un objectif à la descriptionActivity lors du changement de vue

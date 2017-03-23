@@ -43,7 +43,6 @@ public class SelectCalendarDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final List<Calendar> calendars = CalendarManager.getCalendars(getContext());
         for (Calendar c : calendars){
