@@ -74,7 +74,6 @@ public class AddGoalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.add_goal_layout);
         FloatingActionButton addButton = (FloatingActionButton)findViewById(R.id.bt_valid_new_obj);
         description = (EditText) findViewById(R.id.et_contenu_new_obj);
@@ -180,7 +179,6 @@ public class AddGoalActivity extends AppCompatActivity {
         if(!validationTitre(nom.getText().toString())){ Toast.makeText(getBaseContext(), "Titre invalide", Toast.LENGTH_SHORT).show(); return;}
         if(date.getTime() < (new Date()).getTime()){ Toast.makeText(getBaseContext(), "Date invalide", Toast.LENGTH_SHORT).show(); return; }
         Objectif objectif= new Objectif( -1,nom.getText().toString(),description.getText().toString(), date, null);
-
         insertIntoCalendar(objectif);
         ObjectifManager.getObjectifs(this, PRINCIPAL_CALENDAR_ID).add(objectif);
         Toast.makeText(getBaseContext(), "Bon courage !", Toast.LENGTH_SHORT).show();

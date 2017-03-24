@@ -68,18 +68,17 @@ public class ObjectifManager {
         calendarID = IDcalendar;
         context = c;
         if (objectifs != null){
-            objectifs = new ArrayList<>();
+            objectifs.clear();
             objectifInitialization();
         }else{
             getObjectifs(c, IDcalendar);
         }
-
     }
 
     /**
      * methode d'affichage de tout les objectifs
      */
-    private static void affichObj(){
+    public static void affichObj(){
         if (objectifs == null)  return;
         for (Objectif o: objectifs) {
             Log.e("Objectif ::", o.getNom());
@@ -114,7 +113,7 @@ public class ObjectifManager {
      * @return true si l'objectif a bien ete supprime, false sinon
      */
     public static boolean deleteObjectif(Objectif o){
-        //Log.e("Supr. date :", DateFormat.getDateInstance().format(o.getDateDebut()));
+        //Log.ec("Supr. date :", DateFormat.getDateInstane().format(o.getDateDebut()));
         return objectifs.remove(o);
     }
 

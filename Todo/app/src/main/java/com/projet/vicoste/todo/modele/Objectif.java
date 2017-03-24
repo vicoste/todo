@@ -71,7 +71,6 @@ public class Objectif {
         }
         if (dateDebut.compareTo(new GregorianCalendar().getTime()) <= 0)
             ended = true;
-
     }
 
 
@@ -85,37 +84,33 @@ public class Objectif {
         return nom + " se deroule le" + dateDebut.toString()+". " + description;
     }
 
-    /**
-     * redefinition de la méthode equals spécifique aux objectifs
-     * @param o
-     * @return true si egalité, false sinon
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Objectif objectif = (Objectif) o;
+
         if (id != objectif.id) return false;
         if (nom != null ? !nom.equals(objectif.nom) : objectif.nom != null) return false;
         if (description != null ? !description.equals(objectif.description) : objectif.description != null)
             return false;
         if (dateDebut != null ? !dateDebut.equals(objectif.dateDebut) : objectif.dateDebut != null)
             return false;
-        return dateFin != null ? dateFin.equals(objectif.dateFin) : objectif.dateFin == null;
+        if (dateFin != null ? !dateFin.equals(objectif.dateFin) : objectif.dateFin != null)
+            return false;
+        return ended != null ? ended.equals(objectif.ended) : objectif.ended == null;
+
     }
 
-    /**
-     * Redefinition du hashCode spécifique aux objectifs
-     * @return
-     */
     @Override
     public int hashCode() {
-        int result = nom != null ? nom.hashCode() : 0;
+        int result = id;
+        result = 31 * result + (nom != null ? nom.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (dateDebut != null ? dateDebut.hashCode() : 0);
         result = 31 * result + (dateFin != null ? dateFin.hashCode() : 0);
-        result = 31 * result + id;
+        result = 31 * result + (ended != null ? ended.hashCode() : 0);
         return result;
     }
-
 }

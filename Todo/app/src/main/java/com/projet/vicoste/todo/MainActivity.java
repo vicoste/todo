@@ -165,8 +165,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("Request code ::", String.valueOf(requestCode));
+        Log.e("Result code ::", String.valueOf(resultCode) + " Egal : " + String.valueOf(resultCode == Activity.RESULT_OK));
         if (requestCode == CONSTANT_DESCRIPTION_ACTIVITY && resultCode == Activity.RESULT_OK) {
-            mAdapter.notifyDataSetChanged();
+                Log.e("Notify", "Data changed");
+                ObjectifManager.updateObjectifs(this, calendarID);
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.invalidate();
         }
     }
 

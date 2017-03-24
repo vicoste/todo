@@ -90,9 +90,8 @@ public class DescriptionActivity extends AppCompatActivity {
         buttonDeleteReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(deleteObjInCalendar()){
-                    Toast.makeText(getBaseContext(), "L'abandon favorise la SPA !!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "L'abandon favorise la SPA !", Toast.LENGTH_SHORT).show();
                     setResult(Activity.RESULT_OK);
                     finish();
                 }
@@ -116,7 +115,7 @@ public class DescriptionActivity extends AppCompatActivity {
                         finish();
                     }
                 }
-                else  Toast.makeText(getBaseContext(), "Petit tricheur...!!!", Toast.LENGTH_SHORT).show();
+                else  Toast.makeText(getBaseContext(), "Petit tricheur... !", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -124,7 +123,6 @@ public class DescriptionActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @param boutonSucces devient vert si le succes est validable
      */
     private void couleurBouton(FloatingActionButton boutonSucces){
@@ -136,7 +134,6 @@ public class DescriptionActivity extends AppCompatActivity {
      * Methode qui va supprimer l'evenement correspondant à l'objectif dans le calendrier principal
      */
     private boolean deleteObjInCalendar(){
-        // if(!suppressionAccorde()) return false;
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
         int rows = getContentResolver().delete(deleteUri, null, null);
