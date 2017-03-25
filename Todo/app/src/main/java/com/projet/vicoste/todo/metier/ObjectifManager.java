@@ -45,7 +45,7 @@ public class ObjectifManager {
      * projection de ce que l'on va vouloir récupérer pour les evenements dans le calendrier
      */
     private static String[] eventProjection = new String[]{CalendarContract.Events._ID, CalendarContract.Events.TITLE,
-            CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
+            CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND,  CalendarContract.Events.DELETED};
 
     /**
      * Point d'accès pour l'instance unique d'Objectif Manager [Singleton]
@@ -102,9 +102,14 @@ public class ObjectifManager {
         while (cursor.moveToNext()) {
             Date d1 = new Date(cursor.getLong(3));
             Date d2 = new Date(cursor.getLong(4));
-            objectifs.add(new Objectif(cursor.getInt(0), cursor.getString(1), cursor.getString(2),d1 ,d2));
+            Log.e("DELETED DATA BASED", cursor.getString(5));
+            if (cursor.getInt(5) == 0){
+                objectifs.add(new Objectif(cursor.getInt(0), cursor.getString(1), cursor.getString(2),d1 ,d2));
+            }
         }
-        cursor.close();
+
+
+        //cursor.close();
     }
 
     /**

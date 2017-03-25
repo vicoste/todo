@@ -147,14 +147,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
     @Override
     protected void onStart() {
         super.onStart();
-
         if (checkForAddEvent()) {
-            ObjectifManager.updateObjectifs(this, calendarID);
-            mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
-            mRecyclerView.setAdapter(mAdapter);
+                //ObjectifManager.updateObjectifs(this, calendarID);
+                mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
+                mRecyclerView.setAdapter(mAdapter);
         }
-
-
     }
 
     /**
@@ -165,13 +162,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("Request code ::", String.valueOf(requestCode));
-        Log.e("Result code ::", String.valueOf(resultCode) + " Egal : " + String.valueOf(resultCode == Activity.RESULT_OK));
+        //Log.e("Request code ::", String.valueOf(requestCode));
+        //Log.e("Result code ::", String.valueOf(resultCode) + " Egal : " + String.valueOf(resultCode == Activity.RESULT_OK));
         if (requestCode == CONSTANT_DESCRIPTION_ACTIVITY && resultCode == Activity.RESULT_OK) {
-                Log.e("Notify", "Data changed");
                 ObjectifManager.updateObjectifs(this, calendarID);
                 mAdapter.notifyDataSetChanged();
-                mRecyclerView.invalidate();
         }
     }
 
