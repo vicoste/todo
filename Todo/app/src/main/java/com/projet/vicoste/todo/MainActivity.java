@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
     protected void onStart() {
         super.onStart();
         if (checkForAddEvent()) {
-                //ObjectifManager.updateObjectifs(this, calendarID);
                 mAdapter = new RecyclerViewObjectifAdaptater(ObjectifManager.getObjectifs(this, calendarID), this);
                 mRecyclerView.setAdapter(mAdapter);
         }
@@ -162,8 +161,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //Log.e("Request code ::", String.valueOf(requestCode));
-        //Log.e("Result code ::", String.valueOf(resultCode) + " Egal : " + String.valueOf(resultCode == Activity.RESULT_OK));
         if (requestCode == CONSTANT_DESCRIPTION_ACTIVITY && resultCode == Activity.RESULT_OK) {
                 ObjectifManager.updateObjectifs(this, calendarID);
                 mAdapter.notifyDataSetChanged();
@@ -210,10 +207,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     hasPermission = true;
-//                    if (calendarID == -1) {
-//                        DialogFragment dialogSelectCalendar = new SelectCalendarDialogFragment();
-//                        dialogSelectCalendar.show(getSupportFragmentManager(), "SelectCalendarFragment");
-//                    }
                 }
                 break;
         }
@@ -257,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         if (checkForAddEvent()) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
-
             int i = 0;
             for (Objectif objectif : ObjectifManager.getObjectifs(this, calendarID)) {
                 if (objectif.isEnded()) {

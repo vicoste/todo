@@ -137,7 +137,6 @@ public class DescriptionActivity extends AppCompatActivity {
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, objectif.getId());
         int rows = getContentResolver().delete(deleteUri, null, null);
-        Log.e("Row deleted ", String.valueOf(rows));
         return ObjectifManager.deleteObjectif(objectif);
     }
 

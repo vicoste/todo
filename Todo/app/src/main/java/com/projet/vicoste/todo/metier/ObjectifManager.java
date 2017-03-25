@@ -76,16 +76,6 @@ public class ObjectifManager {
     }
 
     /**
-     * methode d'affichage de tout les objectifs
-     */
-    public static void affichObj(){
-        if (objectifs == null)  return;
-        for (Objectif o: objectifs) {
-            Log.e("Objectif ::", o.getNom());
-        }
-    }
-
-    /**
      * constructeur privé
      */
     private ObjectifManager()
@@ -102,14 +92,11 @@ public class ObjectifManager {
         while (cursor.moveToNext()) {
             Date d1 = new Date(cursor.getLong(3));
             Date d2 = new Date(cursor.getLong(4));
-            Log.e("DELETED DATA BASED", cursor.getString(5));
             if (cursor.getInt(5) == 0){
                 objectifs.add(new Objectif(cursor.getInt(0), cursor.getString(1), cursor.getString(2),d1 ,d2));
             }
         }
-
-
-        //cursor.close();
+        cursor.close();
     }
 
     /**
@@ -118,7 +105,6 @@ public class ObjectifManager {
      * @return true si l'objectif a bien ete supprime, false sinon
      */
     public static boolean deleteObjectif(Objectif o){
-        //Log.ec("Supr. date :", DateFormat.getDateInstane().format(o.getDateDebut()));
         return objectifs.remove(o);
     }
 

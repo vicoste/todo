@@ -10,18 +10,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_description_objectif_titre"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textSize="@dimen/titre"
         android:textStyle="normal|bold" />
 
     <TextView
         android:text="@string/Contenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/medium_margin"
         android:layout_below="@id/tv_description_objectif_titre"
         android:textAlignment="center"
         android:id="@+id/tv_but_obj"
-        android:textSize="18sp"
+        android:textSize="@dimen/sous_titres"
         android:textStyle="normal|bold" />
 
     <EditText
@@ -29,7 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        android:ems="10"
         android:layout_below="@id/tv_but_obj"
         android:textAlignment="center" />
 
@@ -37,10 +36,10 @@
         android:text="@string/dead_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/medium_margin"
         android:layout_below="@id/et_description_objectif_contenu"
         android:id="@+id/tv_description_date_presentation"
-        android:textSize="18sp"
+        android:textSize="@dimen/sous_titres"
         android:textAlignment="center"
         android:textStyle="normal|bold" />
 

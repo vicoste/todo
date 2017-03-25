@@ -13,7 +13,7 @@
             android:id="@+id/tv_mesobjectifs"
             android:textStyle="normal|bold"
             android:textAlignment="center"
-            android:textSize="24sp"
+            android:textSize="@dimen/titre"
             android:text="@string/mesobjectifs" />
 
 
