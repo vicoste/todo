@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">TODO</string>
+    <string name="plus">+</string>
+    <string name="mesobjectifs">Mes Objectifs</string>
+    <string name="newObj">Un nouvel objectif ?</string>
+    <string name="Titre">Titre</string>
+    <string name="Contenu">Contenu</string>
+    <string name="retour"><![CDATA[<-]]></string>
+    <string name="valider">DO IT !</string>
+    <string name="SelectionnerDate">Selectionner une date</string>
+    <string name="detail_objectif">Detail sur votre objectif</string>
+    <string name="But">But</string>
+    <string name="dead_line">Vous avez fixé votre objectif pour le :</string>
+    <string name="supprimer">Nope</string>
+    <string name="calendarPreferences">calendarPreferencesID</string>
+</resources>
