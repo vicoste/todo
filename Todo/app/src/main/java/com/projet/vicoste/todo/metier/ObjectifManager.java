@@ -45,7 +45,7 @@ public class ObjectifManager {
      * projection de ce que l'on va vouloir récupérer pour les evenements dans le calendrier
      */
     private static String[] eventProjection = new String[]{CalendarContract.Events._ID, CalendarContract.Events.TITLE,
-            CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND,  CalendarContract.Events.DELETED};
+            CalendarContract.Events.DESCRIPTION, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
 
     /**
      * Point d'accès pour l'instance unique d'Objectif Manager [Singleton]
@@ -76,6 +76,16 @@ public class ObjectifManager {
     }
 
     /**
+     * methode d'affichage de tout les objectifs
+     */
+    public static void affichObj(){
+        if (objectifs == null)  return;
+        for (Objectif o: objectifs) {
+            Log.e("Objectif ::", o.getNom());
+        }
+    }
+
+    /**
      * constructeur privé
      */
     private ObjectifManager()
@@ -92,9 +102,7 @@ public class ObjectifManager {
         while (cursor.moveToNext()) {
             Date d1 = new Date(cursor.getLong(3));
             Date d2 = new Date(cursor.getLong(4));
-            if (cursor.getInt(5) == 0){
-                objectifs.add(new Objectif(cursor.getInt(0), cursor.getString(1), cursor.getString(2),d1 ,d2));
-            }
+            objectifs.add(new Objectif(cursor.getInt(0), cursor.getString(1), cursor.getString(2),d1 ,d2));
         }
         cursor.close();
     }
@@ -105,6 +113,7 @@ public class ObjectifManager {
      * @return true si l'objectif a bien ete supprime, false sinon
      */
     public static boolean deleteObjectif(Objectif o){
+        //Log.ec("Supr. date :", DateFormat.getDateInstane().format(o.getDateDebut()));
         return objectifs.remove(o);
     }
 
