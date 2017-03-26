@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+
+            <TextView
+                style="@style/style_titles"
+                android:text="@string/newObj"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_nouv_objectif"
+                android:textAlignment="center" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textShortMessage"
+                android:id="@+id/titre_new_obj"
+                android:hint="@string/Titre"
+                android:layout_below="@id/tv_nouv_objectif"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:layout_below="@+id/titre_new_obj"
+                android:id="@+id/et_contenu_new_obj"
+                android:hint="@string/Contenu" />
+
+
+            <TextView
+                style="@style/style_titles"
+                android:text="@string/SelectionnerDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_selection_date"
+                android:textAlignment="center"
+                android:layout_below="@+id/et_contenu_new_obj" />
+
+            <DatePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dp_date_new_obj"
+                android:layout_below="@id/tv_selection_date"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/medium_margin" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/bt_valid_new_obj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/clock_add"/>
+
+</RelativeLayout>
