@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewObjec
         calendarID = getPreferences(MODE_PRIVATE).getInt(getString(R.string.calendarPreferences), -1);
         setContentView(R.layout.main_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.lv_todolist);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager((this)));
         FloatingActionButton button_add = (FloatingActionButton)findViewById(R.id.fab_main_go_add_goal);
         FloatingActionButton button_settings = (FloatingActionButton) findViewById(R.id.fab_main_settings);
